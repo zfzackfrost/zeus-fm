@@ -1,4 +1,4 @@
-use crate::zeuslib::events::response::EventLoopAction;
+use crate::zeuslib::events::loopaction::EventLoopAction;
 use crate::zeuslib::input::KeySequence;
 use crate::zeuslib::state::State;
 use std::collections::HashMap;

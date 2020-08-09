@@ -1,7 +1,7 @@
 use crate::zeuslib::state::State;
 use crate::zeuslib::input::KeySequence;
 use crate::zeuslib::config::Config;
-use crate::zeuslib::events::response::EventLoopAction;
+use crate::zeuslib::events::loopaction::EventLoopAction;
 
 
 use std::time::{Duration, Instant};

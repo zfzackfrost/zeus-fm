@@ -11,7 +11,7 @@ use zeus::zeuslib::config::Config;
 use zeus::zeuslib::state::{State};
 use zeus::zeuslib::events::{Events, Event};
 use zeus::zeuslib::events::procevent::{handle_input};
-use zeus::zeuslib::events::response::{EventLoopAction};
+use zeus::zeuslib::events::loopaction::{EventLoopAction};
 
 fn main() -> Result<(), Box<dyn Error>> {
 
