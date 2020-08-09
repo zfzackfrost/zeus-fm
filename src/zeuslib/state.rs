@@ -50,11 +50,12 @@ impl State {
     }
     pub fn refresh(&mut self) {
         for i in 0 .. self.panels.len() {
-            self.panels[i].refresh_list();
+            let panel = self.panels.get_mut(i).unwrap();
+            panel.refresh_list();
             if self.current_panel_idx == i {
-                self.panels[i].select(0);
+                panel.select(panel.cursor_pos);
             } else {
-                self.panels[i].unselect();
+                panel.unselect();
             }
         }
     }
