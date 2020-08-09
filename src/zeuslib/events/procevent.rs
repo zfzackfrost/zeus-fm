@@ -1,5 +1,4 @@
 use crate::zeuslib::state::State;
-use crate::zeuslib::input::KeySequence;
 use crate::zeuslib::config::Config;
 use crate::zeuslib::events::loopaction::EventLoopAction;
 
@@ -8,15 +7,6 @@ use std::time::{Duration, Instant};
 use termion::event::{Key};
 
 lazy_static! {
-    static ref QUIT_KEYSEQ: KeySequence = KeySequence::from_keys(vec![Key::Char('q')]);
-    static ref NEXTTAB_KEYSEQ: KeySequence =
-        KeySequence::from_keys(vec![Key::Char('g'), Key::Char('t'),]);
-    static ref NAVUP_KEYSEQ: KeySequence = KeySequence::from_keys(vec![
-        Key::Char('k')
-    ]);
-    static ref NAVDOWN_KEYSEQ: KeySequence = KeySequence::from_keys(vec![
-        Key::Char('j')
-    ]);
     static ref KEY_TIMEOUT: Duration = Duration::from_millis(1000);
 }
 
