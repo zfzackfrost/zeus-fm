@@ -52,14 +52,14 @@ impl Config {
         let mut config = Self {
             key_map: HashMap::new(),
         };
-        config.map_key(KeySequence::from_keys(vec![Key::Char('q')]), quit_action);
+        config.map_key(KeySequence::from_keys(&[Key::Char('q')]), quit_action);
+        config.map_key(KeySequence::from_keys(&[Key::Char('j')]), move_down_action);
+        config.map_key(KeySequence::from_keys(&[Key::Char('k')]), move_up_action);
+        config.map_key(KeySequence::from_keys(&[Key::Char(' ')]), mark_action);
         config.map_key(
-            KeySequence::from_keys(vec![Key::Char('j')]),
-            move_down_action,
+            KeySequence::from_keys(&[Key::Char('\t')]),
+            next_panel_action,
         );
-        config.map_key(KeySequence::from_keys(vec![Key::Char('k')]), move_up_action);
-        config.map_key(KeySequence::from_keys(vec![Key::Char(' ')]), mark_action);
-        config.map_key(KeySequence::from_keys(vec![Key::Char('\t')]), next_panel_action);
         config
     }
     pub fn map_key<F>(&mut self, k: KeySequence, f: F)

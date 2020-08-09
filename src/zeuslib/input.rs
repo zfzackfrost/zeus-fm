@@ -1,18 +1,20 @@
 extern crate termion;
 
-use termion::event::Key;
 use std::hash::{Hash, Hasher};
+use termion::event::Key;
 
 pub struct KeySequence {
     keys: Vec<Key>,
 }
 
 impl KeySequence {
-    pub fn from_keys(keys: Vec<Key>) -> Self {
-        Self { keys }
+    pub fn from_keys(keys: &[Key]) -> Self {
+        Self {
+            keys: Vec::from(keys),
+        }
     }
     pub fn default() -> Self {
-        Self { keys: vec![] }
+        Self { keys: Vec::new() }
     }
     pub fn push(&mut self, key: Key) {
         self.keys.push(key);
@@ -27,8 +29,7 @@ impl KeySequence {
 
 impl Hash for KeySequence {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        let iter = self.keys.iter().enumerate();
-        for i in iter {
+        for i in self.keys.iter().enumerate() {
             i.hash(state);
         }
     }
