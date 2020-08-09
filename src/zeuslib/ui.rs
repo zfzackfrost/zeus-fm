@@ -1,4 +1,3 @@
-pub mod statefullist;
 pub mod filelist;
 
 extern crate termion;
@@ -16,8 +15,7 @@ use crate::zeuslib::state::State;
 
 #[allow(dead_code)]
 struct LayoutRects {
-    left_panel: Rect,
-    right_panel: Rect,
+    panels: Vec<Rect>,
     header: Rect,
     footer: Rect,
 }
@@ -44,8 +42,7 @@ impl LayoutRects {
             .split(top_level[1]);
 
         Self {
-            left_panel: center[0],
-            right_panel: center[1],
+            panels: vec![center[0], center[1]],
             header: top_level[0],
             footer: top_level[2],
         }
@@ -76,8 +73,9 @@ fn draw_tabs<B: Backend>(f: &mut Frame<B>, state: &State, layout: &LayoutRects) 
 }
 
 fn draw_panels<B: Backend>(f: &mut Frame<B>, state: &mut State, layout: &LayoutRects) {
-    state.left_panel.draw(f, &layout.left_panel);
-    state.right_panel.draw(f, &layout.right_panel);
+    for p in 0 .. state.panels.len() {
+        state.panels[p].draw(f, &layout.panels[p]);
+    }
 }
 
 pub fn draw<B: Backend>(

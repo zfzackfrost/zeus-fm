@@ -1,7 +1,7 @@
 use crate::zeuslib::state::State;
 use crate::zeuslib::input::KeySequence;
 use crate::zeuslib::config::Config;
-use crate::zeuslib::events::response::EventResponse;
+use crate::zeuslib::events::response::EventLoopAction;
 
 
 use std::time::{Duration, Instant};
@@ -20,12 +20,12 @@ lazy_static! {
     static ref KEY_TIMEOUT: Duration = Duration::from_millis(1000);
 }
 
-fn handle_key_event(state: &mut State, config: &Config, k: Key) -> EventResponse {
+fn handle_key_event(mut state: &mut State, config: &Config, k: Key) -> EventLoopAction {
     let now = Instant::now();
     if k == Key::Esc {
         state.key_seq.clear();
         state.last_key_time = Some(now);
-        return EventResponse::ContinueLoop;
+        return EventLoopAction::ContinueLoop;
     }
     match state.last_key_time {
         Some(kt) => {
@@ -45,17 +45,17 @@ fn handle_key_event(state: &mut State, config: &Config, k: Key) -> EventResponse
         let seq = kv.0;
         let action = kv.1;
         if state.key_seq == *seq {
-            let r = action();
+            let r = action(&mut state);
             state.key_seq.clear();
-            if r == EventResponse::QuitLoop {
+            if r == EventLoopAction::QuitLoop {
                 return r;
             }
         }
     }
     
-    EventResponse::ContinueLoop
+    EventLoopAction::ContinueLoop
 }
 
-pub fn handle_input(state: &mut State, config: &Config, key: Key) -> EventResponse {
+pub fn handle_input(state: &mut State, config: &Config, key: Key) -> EventLoopAction {
     handle_key_event(state, config, key)
 }

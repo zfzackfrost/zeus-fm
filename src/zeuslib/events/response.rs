@@ -1,5 +1,5 @@
 #[derive(PartialEq)]
-pub enum EventResponse {
+pub enum EventLoopAction {
     ContinueLoop,
     QuitLoop,
 }
