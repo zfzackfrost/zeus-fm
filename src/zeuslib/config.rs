@@ -87,10 +87,6 @@ impl Config {
             &actions["move_up"],
         );
         config.map_key(KeySequence::from_keys(&[Key::Char(' ')]), &actions["mark"]);
-        config.map_key(
-            KeySequence::from_keys(&[Key::Char('\t')]),
-            &actions["next_panel"],
-        );
         config
     }
     pub fn map_key(&mut self, k: KeySequence, action: &Action) {

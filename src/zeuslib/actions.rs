@@ -8,12 +8,6 @@ fn quit_action(_state: &mut State) -> EventLoopAction {
     EventLoopAction::QuitLoop
 }
 
-fn next_panel_action(state: &mut State) -> EventLoopAction {
-    state.next_panel();
-    state.refresh();
-    EventLoopAction::ContinueLoop
-}
-
 fn move_down_action(state: &mut State) -> EventLoopAction {
     let panel = state.get_current_panel_mut();
     if let Some(p) = panel {
@@ -51,6 +45,5 @@ pub fn get_actions() -> HashMap<String, Action> {
     actions.insert(String::from("move_down"), Rc::new(move_down_action));
     actions.insert(String::from("move_up"), Rc::new(move_up_action));
     actions.insert(String::from("mark"), Rc::new(mark_action));
-    actions.insert(String::from("next_panel"), Rc::new(next_panel_action));
     actions
 }

@@ -38,11 +38,11 @@ impl LayoutRects {
 
         let center = Layout::default()
             .direction(Direction::Horizontal)
-            .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+            .constraints([Constraint::Percentage(30), Constraint::Percentage(40), Constraint::Percentage(30)].as_ref())
             .split(top_level[1]);
 
         Self {
-            panels: vec![center[0], center[1]],
+            panels: vec![center[0], center[1], center[2]],
             header: top_level[0],
             footer: top_level[2],
         }

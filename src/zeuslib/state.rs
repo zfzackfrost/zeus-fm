@@ -3,6 +3,10 @@ use std::time::Instant;
 use crate::zeuslib::input::KeySequence;
 pub use crate::zeuslib::ui::filelist::{FileList, FileListItem};
 
+const NUM_PANELS: usize = 3;
+const DEFAULT_PANEL_IDX: usize = 1;
+
+
 pub struct State {
     pub current_tab: u8,
     pub tab_count: u8,
@@ -15,10 +19,10 @@ pub struct State {
 
 impl State {
     pub fn default() -> Self {
-        Self::from_tab_count(1, 2)
+        Self::from_tab_count(1)
     }
 
-    pub fn from_tab_count(tab_count: u8, panel_count: usize) -> Self {
+    pub fn from_tab_count(tab_count: u8) -> Self {
         let mut state = Self {
             current_tab: 0,
             tab_count,
@@ -28,13 +32,13 @@ impl State {
                 let work_dir = std::env::current_dir().expect("Could not get working directory!");
                 let work_dir = work_dir.to_str().unwrap();
 
-                let v: Vec<FileList> = (0..(panel_count))
+                let v: Vec<FileList> = (0..(NUM_PANELS))
                     .map(|_x| FileList::new(work_dir))
                     .collect();
                 v
             },
             last_key_time: None,
-            current_panel_idx: 0,
+            current_panel_idx: DEFAULT_PANEL_IDX,
         };
         state.refresh();
         state.select_initial_panel();

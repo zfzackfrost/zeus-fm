@@ -62,10 +62,11 @@ impl FileListItem {
         }
     }
     fn get_text(&self, width: u16) -> String {
+        let name = Path::new(&self.path).file_name().unwrap().to_str().unwrap();
         let base = if self.is_dir() {
-            format!(" [{}]", self.path)  
+            format!(" [{}]", name)  
         } else {
-            format!(" {}", self.path)
+            format!(" {}", name)
         };
 
         let base = if self.marked {
@@ -78,9 +79,17 @@ impl FileListItem {
         let width: usize = width.into();
         let pad_width = {
             let mut w = width;
-            w -= base.len() + 1;
-            w -= size_text.len() + 1;
-            w
+            if w > base.len() + 1 {
+                w -= base.len() + 1;
+            } else {
+                w = 0;
+            }
+            if w > size_text.len() + 1 {
+                w -= size_text.len() + 1;
+            } else {
+                w = 0;
+            }
+            w.max(1)
         };
         
         let padding = String::from_iter((0 .. pad_width).map(|_| ' '));
