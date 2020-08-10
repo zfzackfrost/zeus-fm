@@ -1,4 +1,4 @@
-#![crate_name = "zeus"]
+#![crate_name = "zeus_fm"]
 
 #[macro_use]
 extern crate lazy_static;

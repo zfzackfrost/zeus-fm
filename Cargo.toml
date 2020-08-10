@@ -1,6 +1,8 @@
 [package]
-name = "zeus"
-version = "0.1.0"
+name = "zeus-fm"
+description = "Fast and flexible terminal file manager"
+license = "MIT"
+version = "0.1.2"
 authors = ["Zachary Frost"]
 edition = "2018"
 

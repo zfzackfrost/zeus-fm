@@ -6,12 +6,12 @@ use tui::Terminal;
 // use tui::layout::{Layout, Constraint, Direction};
 
 
-use zeus::zeuslib::ui::draw;
-use zeus::zeuslib::config::Config;
-use zeus::zeuslib::state::{State};
-use zeus::zeuslib::events::{Events, Event};
-use zeus::zeuslib::events::procevent::{handle_input};
-use zeus::zeuslib::events::loopaction::{EventLoopAction};
+use zeus_fm::zeuslib::ui::draw;
+use zeus_fm::zeuslib::config::Config;
+use zeus_fm::zeuslib::state::{State};
+use zeus_fm::zeuslib::events::{Events, Event};
+use zeus_fm::zeuslib::events::procevent::{handle_input};
+use zeus_fm::zeuslib::events::loopaction::{EventLoopAction};
 
 fn main() -> Result<(), Box<dyn Error>> {
 

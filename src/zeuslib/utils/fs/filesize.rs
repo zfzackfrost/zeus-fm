@@ -65,7 +65,7 @@ impl FileSize {
     /// # Examples
     ///
     /// ```
-    /// use zeus::zeuslib::utils::fs::FileSize;
+    /// use zeus_fm::zeuslib::utils::fs::FileSize;
     ///
     /// const b: u64 = 1048726;
     ///
@@ -110,7 +110,7 @@ impl FileSize {
     /// # Examples
     ///
     /// ```
-    /// use zeus::zeuslib::utils::fs::FileSize;
+    /// use zeus_fm::zeuslib::utils::fs::FileSize;
     ///
     /// const b: u64 = 1048576;
     /// let fsize = FileSize::from_total_bytes(b); // Create a `FileSize`
