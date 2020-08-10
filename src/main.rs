@@ -8,12 +8,34 @@ use tui::Terminal;
 
 use zeus_fm::zeuslib::ui::draw;
 use zeus_fm::zeuslib::config::Config;
+use zeus_fm::zeuslib::utils::fs::*;
 use zeus_fm::zeuslib::state::{State};
 use zeus_fm::zeuslib::events::{Events, Event};
 use zeus_fm::zeuslib::events::procevent::{handle_input};
 use zeus_fm::zeuslib::events::loopaction::{EventLoopAction};
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let cfg_path = &*CONFIG_FILE;
+    let cfg_dir = &*CONFIG_DIR;
+    if let Some(cfg_dir) = cfg_dir {
+        if !cfg_dir.is_dir() {
+            std::fs::create_dir_all(cfg_dir.to_owned())?;
+        }
+    }
+    
+    let config: Config;
+    if let Some(cfg_path) = cfg_path {
+        if !cfg_path.is_file() {
+            std::fs::write(cfg_path.to_owned(), "")?;
+        }
+        config = if let Some(cfg) = Config::from_file(cfg_path) {
+            cfg
+        } else {
+            Config::default()
+        }
+    } else {
+        config = Config::default();
+    }
 
     let mut state = State::default();
 
@@ -26,8 +48,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Setup event handlers
     let events = Events::new();
-
-    let config: Config = Config::default();
 
     terminal.clear()?;
 

@@ -9,4 +9,13 @@ lazy_static! {
             None
         }
     };
+
+
+    pub static ref CONFIG_FILE: Option<PathBuf> = {
+        if let Some(dir) = &*CONFIG_DIR {
+            Some(dir.join("zeus.toml"))
+        } else {
+            None
+        }
+    };
 }

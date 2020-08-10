@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use std::rc::Rc;
+
 use crate::zeuslib::events::loopaction::EventLoopAction;
 use crate::zeuslib::state::State;
 
@@ -40,3 +43,14 @@ pub fn mark_action(state: &mut State) -> EventLoopAction {
     EventLoopAction::ContinueLoop
 }
 
+pub type Action = Rc<dyn Fn(&mut State) -> EventLoopAction>;
+
+pub fn get_actions() -> HashMap<String, Action> {
+    let mut actions: HashMap<String,Action> = HashMap::new();
+    actions.insert(String::from("quit"), Rc::new(quit_action));
+    actions.insert(String::from("move_down"), Rc::new(move_down_action));
+    actions.insert(String::from("move_up"), Rc::new(move_up_action));
+    actions.insert(String::from("mark"), Rc::new(mark_action));
+    actions.insert(String::from("next_panel"), Rc::new(next_panel_action));
+    actions
+}
