@@ -1,15 +1,13 @@
 use std::collections::HashMap;
-use std::rc::Rc;
-use std::iter::FromIterator;
-use termion::event::Key;
-use toml::{Value};
-use std::path::{PathBuf};
 use std::fs;
+use std::iter::FromIterator;
+use std::path::PathBuf;
+use std::rc::Rc;
+use termion::event::Key;
+use toml::Value;
 
 use crate::zeuslib::actions::*;
-use crate::zeuslib::events::loopaction::EventLoopAction;
 use crate::zeuslib::input::KeySequence;
-use crate::zeuslib::state::State;
 
 type KeyMap = HashMap<KeySequence, Action>;
 
@@ -20,7 +18,7 @@ pub struct Config {
 impl Config {
     pub fn from_file(path: &PathBuf) -> Option<Self> {
         if !path.is_file() {
-            return None
+            return None;
         }
         let value: Option<String> = {
             let contents = fs::read_to_string(path);
@@ -38,10 +36,10 @@ impl Config {
 
         None
     }
-    
-    fn process_config_file(value: &Value) -> Self {
+
+    fn process_config_mappings(toml_value: &Value) -> KeyMap {
         let fallback = toml::value::Table::new();
-        let mappings = value["mappings"].as_table().unwrap_or(&fallback);
+        let mappings = toml_value["mappings"].as_table().unwrap_or(&fallback);
         let mut key_map: KeyMap = KeyMap::new();
         let actions = get_actions();
         for (action, keys) in mappings {
@@ -54,13 +52,9 @@ impl Config {
             let keyseq = keys.as_array();
             if let Some(keyseq) = keyseq {
                 let keyseq = {
-                    let key_chars = keyseq.iter().map(|x|{
+                    let key_chars = keyseq.iter().map(|x| {
                         let s = x.as_str();
-                        let s = if let Some(s) = s {
-                            s
-                        } else {
-                            ""
-                        };
+                        let s = if let Some(s) = s { s } else { "" };
                         let c = s.chars().nth(0).unwrap();
                         Key::Char(c)
                     });
@@ -69,8 +63,12 @@ impl Config {
                 key_map.insert(KeySequence::from_keys(&keyseq), action);
             }
         }
+        key_map
+    }
+
+    fn process_config_file(value: &Value) -> Self {
         Self {
-            key_map,
+            key_map: Self::process_config_mappings(&value),
         }
     }
 
@@ -78,20 +76,24 @@ impl Config {
         let mut config = Self {
             key_map: HashMap::new(),
         };
-        config.map_key(KeySequence::from_keys(&[Key::Char('q')]), quit_action);
-        config.map_key(KeySequence::from_keys(&[Key::Char('j')]), move_down_action);
-        config.map_key(KeySequence::from_keys(&[Key::Char('k')]), move_up_action);
-        config.map_key(KeySequence::from_keys(&[Key::Char(' ')]), mark_action);
+        let actions = get_actions();
+        config.map_key(KeySequence::from_keys(&[Key::Char('q')]), &actions["quit"]);
+        config.map_key(
+            KeySequence::from_keys(&[Key::Char('j')]),
+            &actions["move_down"],
+        );
+        config.map_key(
+            KeySequence::from_keys(&[Key::Char('k')]),
+            &actions["move_up"],
+        );
+        config.map_key(KeySequence::from_keys(&[Key::Char(' ')]), &actions["mark"]);
         config.map_key(
             KeySequence::from_keys(&[Key::Char('\t')]),
-            next_panel_action,
+            &actions["next_panel"],
         );
         config
     }
-    pub fn map_key<F>(&mut self, k: KeySequence, f: F)
-    where
-        F: Fn(&mut State) -> EventLoopAction + 'static,
-    {
-        self.key_map.insert(k, Rc::new(f));
+    pub fn map_key(&mut self, k: KeySequence, action: &Action) {
+        self.key_map.insert(k, Rc::clone(action));
     }
 }

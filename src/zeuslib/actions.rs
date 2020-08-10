@@ -4,17 +4,17 @@ use std::rc::Rc;
 use crate::zeuslib::events::loopaction::EventLoopAction;
 use crate::zeuslib::state::State;
 
-pub fn quit_action(_state: &mut State) -> EventLoopAction {
+fn quit_action(_state: &mut State) -> EventLoopAction {
     EventLoopAction::QuitLoop
 }
 
-pub fn next_panel_action(state: &mut State) -> EventLoopAction {
+fn next_panel_action(state: &mut State) -> EventLoopAction {
     state.next_panel();
     state.refresh();
     EventLoopAction::ContinueLoop
 }
 
-pub fn move_down_action(state: &mut State) -> EventLoopAction {
+fn move_down_action(state: &mut State) -> EventLoopAction {
     let panel = state.get_current_panel_mut();
     if let Some(p) = panel {
         p.next();
@@ -22,7 +22,7 @@ pub fn move_down_action(state: &mut State) -> EventLoopAction {
     EventLoopAction::ContinueLoop
 }
 
-pub fn move_up_action(state: &mut State) -> EventLoopAction {
+fn move_up_action(state: &mut State) -> EventLoopAction {
     let panel = state.get_current_panel_mut();
     if let Some(p) = panel {
         p.previous();
@@ -30,7 +30,7 @@ pub fn move_up_action(state: &mut State) -> EventLoopAction {
     EventLoopAction::ContinueLoop
 }
 
-pub fn mark_action(state: &mut State) -> EventLoopAction {
+fn mark_action(state: &mut State) -> EventLoopAction {
     let selected = { state.selected() };
     let panel = state.get_current_panel_mut();
     if let Some(i) = selected {

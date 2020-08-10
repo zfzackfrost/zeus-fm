@@ -5,14 +5,13 @@ use tui::backend::TermionBackend;
 use tui::Terminal;
 // use tui::layout::{Layout, Constraint, Direction};
 
-
-use zeus_fm::zeuslib::ui::draw;
 use zeus_fm::zeuslib::config::Config;
+use zeus_fm::zeuslib::events::loopaction::EventLoopAction;
+use zeus_fm::zeuslib::events::procevent::{handle_input, handle_tick};
+use zeus_fm::zeuslib::events::{Event, Events};
+use zeus_fm::zeuslib::state::State;
+use zeus_fm::zeuslib::ui::draw;
 use zeus_fm::zeuslib::utils::fs::*;
-use zeus_fm::zeuslib::state::{State};
-use zeus_fm::zeuslib::events::{Events, Event};
-use zeus_fm::zeuslib::events::procevent::{handle_input};
-use zeus_fm::zeuslib::events::loopaction::{EventLoopAction};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cfg_path = &*CONFIG_FILE;
@@ -22,7 +21,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             std::fs::create_dir_all(cfg_dir.to_owned())?;
         }
     }
-    
     let config: Config;
     if let Some(cfg_path) = cfg_path {
         if !cfg_path.is_file() {
@@ -53,14 +51,17 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     loop {
         draw(&mut terminal, &mut state)?;
-        if let Event::Input(input) = events.next()? {
-            match handle_input(&mut state, &config, input) {
+        let evt = events.next()?;
+        match evt {
+            Event::Input(input) => match handle_input(&mut state, &config, input) {
                 EventLoopAction::QuitLoop => break,
                 _ => {}
+            },
+            Event::Tick => {
+                handle_tick(&mut state);
             }
         }
     }
-    
     terminal.clear()?;
 
     Result::Ok(())

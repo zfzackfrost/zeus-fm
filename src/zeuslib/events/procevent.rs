@@ -10,13 +10,8 @@ lazy_static! {
     static ref KEY_TIMEOUT: Duration = Duration::from_millis(1000);
 }
 
-fn handle_key_event(mut state: &mut State, config: &Config, k: Key) -> EventLoopAction {
+pub fn handle_tick(state: &mut State) {
     let now = Instant::now();
-    if k == Key::Esc {
-        state.key_seq.clear();
-        state.last_key_time = Some(now);
-        return EventLoopAction::ContinueLoop;
-    }
     match state.last_key_time {
         Some(kt) => {
             let elapsed = now.duration_since(kt);
@@ -25,6 +20,15 @@ fn handle_key_event(mut state: &mut State, config: &Config, k: Key) -> EventLoop
             }
         }
         _ => {}
+    }
+}
+
+fn handle_key_event(mut state: &mut State, config: &Config, k: Key) -> EventLoopAction {
+    let now = Instant::now();
+    if k == Key::Esc {
+        state.key_seq.clear();
+        state.last_key_time = Some(now);
+        return EventLoopAction::ContinueLoop;
     }
     state.last_key_time = Some(now);
     state.key_seq.push(k);
