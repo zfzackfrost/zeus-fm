@@ -4,6 +4,7 @@
 extern crate lazy_static;
 
 pub mod zeuslib {
+    pub mod actions;
     pub mod ui;
     pub mod state;
     pub mod input;
