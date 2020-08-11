@@ -23,7 +23,8 @@ impl Default for TabState {
                 Panel::EmptyPanel
             };
             let center = Some(Rc::new(RefCell::new(FileList::new(dir.to_str().unwrap()))));
-            [left, Panel::FileListPanel(center), Panel::EmptyPanel]
+            let right = Rc::new(RefCell::new(Preview::default()));
+            [left, Panel::FileListPanel(center), Panel::PreviewPanel(right)]
         };
         Self {
             dir: Some(dir),
@@ -98,6 +99,20 @@ impl TabState {
         {
             if let Some(path) = path {
                 self.cd(Some(path));
+            }
+        }
+    }
+
+    pub fn update_preview(&mut self) {
+        if let Panel::PreviewPanel(preview) = &self.panels[2] {
+            let mut preview = preview.borrow_mut();
+            if let Panel::FileListPanel(Some(main_panel)) = &self.panels[MAIN_PANEL_IDX] {
+                let main_panel = main_panel.borrow();
+                let selected_item = main_panel.selected_item();
+                if let Some(selected_item) = selected_item {
+                    let p = selected_item.path;
+                    preview.set_path(Some(PathBuf::from(p)));
+                }
             }
         }
     }

@@ -14,6 +14,10 @@ fn move_down_action(state: &mut State) -> EventLoopAction {
         let mut panel = panel.borrow_mut();
         panel.next();
     }
+    {
+        let tab = state.get_current_tab_mut();
+        tab.update_preview();
+    }
     EventLoopAction::ContinueLoop
 }
 
@@ -22,6 +26,10 @@ fn move_up_action(state: &mut State) -> EventLoopAction {
     if let Ok(Some(panel)) = panel {
         let mut panel = panel.borrow_mut();
         panel.previous();
+    }
+    {
+        let tab = state.get_current_tab_mut();
+        tab.update_preview();
     }
     EventLoopAction::ContinueLoop
 }
@@ -42,11 +50,13 @@ fn mark_action(state: &mut State) -> EventLoopAction {
 fn cd_parent_action(state: &mut State) -> EventLoopAction {
     let tab = state.get_current_tab_mut();
     tab.cd_parent();
+    tab.update_preview();
     EventLoopAction::ContinueLoop
 }
 fn cd_selected_action(state: &mut State) -> EventLoopAction {
     let tab = state.get_current_tab_mut();
     tab.cd_selected();
+    tab.update_preview();
     EventLoopAction::ContinueLoop
 }
 

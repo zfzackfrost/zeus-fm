@@ -1,11 +1,13 @@
 pub use crate::zeuslib::ui::filelist::{FileList, FileListRc, Rc, RefCell};
 pub use crate::zeuslib::ui::drawable::*;
+pub use crate::zeuslib::ui::preview::*;
 
 use tui::widgets::{Block, Borders};
 
 pub enum Panel {
     FileListPanel(FileListRc),
     EmptyPanel,
+    PreviewPanel(PreviewRc),
 }
 
 fn draw_empty_panel(f: &mut Frame<Backend>, size: &Rect) {
@@ -21,6 +23,10 @@ impl Drawable for Panel {
                 let mut panel = panel.borrow_mut();
                 panel.draw(f, size);
             },
+            Self::PreviewPanel(panel) => {
+                let mut panel = panel.borrow_mut();
+                panel.draw(f, size);
+            },
             Self::EmptyPanel => {
                 draw_empty_panel(f, size);
             },
@@ -28,3 +34,4 @@ impl Drawable for Panel {
         }
     }
 }
+
