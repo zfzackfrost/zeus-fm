@@ -5,6 +5,8 @@ use crate::zeuslib::ui::filelist::{FileList, Rc, RefCell};
 use crate::zeuslib::ui::panel::*;
 
 pub const PANELS_PER_TAB: usize = 3;
+const MAIN_PANEL_IDX: usize = 1;
+
 pub struct TabState {
     pub dir: Option<PathBuf>,
         pub panels: Vec<Panel>,
@@ -37,8 +39,7 @@ impl TabState {
         if let Some(new_dir) = new_dir {
             let mut left_empty = false; // Should the left panel be set to empty?
             {
-                let left_panel = &self.panels[0];
-                if let Panel::FileListPanel(Some(left)) = left_panel {
+                if let Panel::FileListPanel(Some(left)) = &self.panels[0] {
                     let mut panel = left.borrow_mut();
                     let parent = new_dir.parent();
                     if let Some(parent) = parent {
@@ -56,11 +57,12 @@ impl TabState {
                 }
             }
             {
-                let center = self.panels.get_mut(1);
-                if let Some(Panel::FileListPanel(Some(center))) = center {
+                if let Panel::FileListPanel(Some(center)) = &self.panels[MAIN_PANEL_IDX] {
                     let mut panel = center.borrow_mut();
+                    let pos = panel.cursor_pos;
                     panel.set_root(new_dir.to_str().expect("Invalid path!"));
                     panel.refresh_list();
+                    panel.select(pos);
                 }
             }
         }
@@ -78,5 +80,25 @@ impl TabState {
             None
         };
         self.cd(new_dir);
+    }
+    
+
+    pub fn cd_selected(&mut self) {
+        let mut path: Option<PathBuf> = None;
+        if let Panel::FileListPanel(Some(panel)) = &mut self.panels[MAIN_PANEL_IDX] {
+            let panel = panel.borrow();
+            let item = panel.selected_item();
+            if let Some(item) = item {
+                if !item.is_dir() {
+                    return
+                }
+                path = Some(PathBuf::from(item.path));
+            }
+        }
+        {
+            if let Some(path) = path {
+                self.cd(Some(path));
+            }
+        }
     }
 }

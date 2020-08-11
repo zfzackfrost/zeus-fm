@@ -44,6 +44,11 @@ fn cd_parent_action(state: &mut State) -> EventLoopAction {
     tab.cd_parent();
     EventLoopAction::ContinueLoop
 }
+fn cd_selected_action(state: &mut State) -> EventLoopAction {
+    let tab = state.get_current_tab_mut();
+    tab.cd_selected();
+    EventLoopAction::ContinueLoop
+}
 
 pub type Action = Rc<dyn Fn(&mut State) -> EventLoopAction>;
 
@@ -54,5 +59,6 @@ pub fn get_actions() -> HashMap<String, Action> {
     actions.insert(String::from("move_up"), Rc::new(move_up_action));
     actions.insert(String::from("mark"), Rc::new(mark_action));
     actions.insert(String::from("cd_parent"), Rc::new(cd_parent_action));
+    actions.insert(String::from("cd_selected"), Rc::new(cd_selected_action));
     actions
 }

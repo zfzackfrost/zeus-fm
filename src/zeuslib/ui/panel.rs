@@ -1,4 +1,4 @@
-pub use crate::zeuslib::ui::filelist::{FileList, FileListRc};
+pub use crate::zeuslib::ui::filelist::{FileList, FileListRc, Rc, RefCell};
 pub use crate::zeuslib::ui::drawable::*;
 
 use tui::widgets::{Block, Borders};

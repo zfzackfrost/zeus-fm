@@ -177,11 +177,18 @@ impl FileList {
     }
 
     pub fn select(&mut self, index: usize) {
-        self.state.select(Some(index));
-        self.cursor_pos = index;
+        self.cursor_pos = index.min(self.items.len() - 1);
+        self.state.select(Some(self.cursor_pos));
     }
     pub fn selected(&self) -> Option<usize> {
         self.state.selected()
+    }
+    pub fn selected_item(&self) -> Option<FileListItem> {
+        if let Some(sel) = self.selected() {
+            Some(self.items[sel].clone())
+        } else {
+            None
+        }
     }
 
     pub fn refresh_list(&mut self) {
