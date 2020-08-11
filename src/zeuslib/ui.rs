@@ -1,9 +1,11 @@
 pub mod filelist;
+pub mod preview;
+pub mod drawable;
+pub mod panel;
 
 extern crate termion;
 use std::io::{self};
 
-use tui::backend::Backend;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 use tui::style::{Color, Style};
 use tui::symbols::DOT;
@@ -12,6 +14,8 @@ use tui::widgets::{Block, Borders, Tabs};
 use tui::{Frame, Terminal};
 
 use crate::zeuslib::state::State;
+pub use crate::zeuslib::ui::drawable::Drawable;
+pub use crate::zeuslib::Backend;
 
 #[allow(dead_code)]
 struct LayoutRects {
@@ -21,7 +25,7 @@ struct LayoutRects {
 }
 
 impl LayoutRects {
-    fn new<B: Backend>(f: &Frame<B>) -> Self {
+    fn new(f: &Frame<Backend>) -> Self {
         let s = f.size();
 
         let top_level = Layout::default()
@@ -50,14 +54,14 @@ impl LayoutRects {
 }
 
 fn make_tab_names(state: &State) -> Vec<String> {
-    let tc: u32 = state.tab_count.into();
+    let tc: u32 = state.tabs.len() as u32;
     let nums = 1u32..(tc + 1u32);
     let nums_vec: Vec<_> = nums.map(u32::from).collect();
 
     nums_vec.iter().map(|x| format!("Tab {}", x)).collect()
 }
 
-fn draw_tabs<B: Backend>(f: &mut Frame<B>, state: &State, layout: &LayoutRects) {
+fn draw_tabs(f: &mut Frame<Backend>, state: &State, layout: &LayoutRects) {
     let titles = make_tab_names(state)
         .iter()
         .cloned()
@@ -72,14 +76,19 @@ fn draw_tabs<B: Backend>(f: &mut Frame<B>, state: &State, layout: &LayoutRects) 
     f.render_widget(tabs, layout.header);
 }
 
-fn draw_panels<B: Backend>(f: &mut Frame<B>, state: &mut State, layout: &LayoutRects) {
-    for p in 0 .. state.panels.len() {
-        state.panels[p].draw(f, &layout.panels[p]);
+fn draw_panels(f: &mut Frame<Backend>, state: &mut State, layout: &LayoutRects) {
+    let tab = &mut state.get_current_tab_mut();
+    for p in 0 .. tab.panels.len() {
+        let panel = tab.panels.get_mut(p);
+        if let Some(mut panel) = panel {
+            let panel = &mut panel;
+            panel.draw(f, &layout.panels[p]);
+        }
     }
 }
 
-pub fn draw<B: Backend>(
-    terminal: &mut Terminal<B>,
+pub fn draw(
+    terminal: &mut Terminal<Backend>,
     mut state: &mut State,
 ) -> Result<(), io::Error> {
     terminal.draw(|f| {

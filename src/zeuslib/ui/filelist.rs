@@ -1,5 +1,5 @@
 use tui::widgets::{ListState, ListItem, List, Borders, Block, StatefulWidget};
-use tui::{Frame, backend::Backend};
+use tui::{Frame};
 use tui::{text::Span};
 use tui::layout::{Rect};
 use tui::buffer::{Buffer};
@@ -8,7 +8,12 @@ pub use tui::style::{Style, Color, Modifier};
 use std::path::Path;
 use std::iter::FromIterator;
 
+pub use std::rc::Rc;
+pub use std::cell::RefCell;
+
+use crate::zeuslib::Backend;
 use crate::zeuslib::utils::fs::FileSize;
+pub use crate::zeuslib::ui::Drawable;
 
 #[derive(Clone)]
 #[derive(Debug)]
@@ -238,7 +243,12 @@ impl FileList {
         self.state.select(None);
     }
 
-    pub fn draw<B: Backend>(&mut self, f: &mut Frame<B>, size: &Rect) {
+}
+
+impl Drawable for FileList {
+    fn draw(&mut self, f: &mut Frame<Backend>, size: &Rect) {
         f.render_stateful_widget(self.clone(), *size, &mut self.state);
     }
 }
+
+pub type FileListRc = Option<Rc<RefCell<FileList>>>;

@@ -36,6 +36,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut state = State::default();
+
+
     // Terminal initialization
     let stdout = io::stdout().into_raw_mode()?;
     let stdout = MouseTerminal::from(stdout);
