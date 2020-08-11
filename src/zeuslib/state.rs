@@ -64,6 +64,10 @@ impl State {
                 }
             }
         }
+        {
+            let tab = { &mut self.get_current_tab_mut() };
+            tab.update_preview();
+        }
     }
     pub fn get_current_panel(&self) -> Result<FileListRc, ()> {
         let idx: usize = self.current_panel_idx;
@@ -114,11 +118,17 @@ impl State {
         None
     }
 
+    pub fn new_tab(&mut self) {
+        self.tabs.push(TabState::default());
+        self.refresh();
+    }
+
     pub fn next_tab(&mut self) {
         self.current_tab += 1;
         if self.current_tab >= self.tabs.len() {
             self.current_tab = 0;
         }
+        self.refresh();
     }
 
     pub fn next_panel(&mut self) {
